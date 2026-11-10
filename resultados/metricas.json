@@ -1,0 +1,22 @@
+{
+    "mensaje": "Entrenamiento realizado correctamente",
+    "registros": 49582,
+    "entrenamiento": 39665,
+    "prueba": 9917,
+    "metricas": {
+        "accuracy": 0.8866592719572451,
+        "precision": 0.8772273350303506,
+        "recall": 0.90014064697609,
+        "f1_score": 0.8885362951209838
+    },
+    "matriz_confusion": [
+        [
+            4313,
+            627
+        ],
+        [
+            497,
+            4480
+        ]
+    ]
+}
