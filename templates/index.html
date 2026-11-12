@@ -1,405 +1,72 @@
+{% extends "base.html" %}
 
-<!DOCTYPE html>
-<html lang="es">
+{% block title %}Inicio | CineSentiment AI{% endblock %}
 
-<head>
+{% block content %}
 
-    <meta charset="UTF-8">
+<section class="hero">
+    <div class="hero-content">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <span class="hero-tag">
+            <i class="bi bi-stars"></i>
+            INTELIGENCIA ARTIFICIAL · MACHINE LEARNING
+        </span>
 
-    <title>Análisis de Sentimientos IMDB</title>
-
-    <link rel="stylesheet"
-    href="{{ url_for('static', filename='estilos.css') }}">
-
-</head>
-
-<body>
-
-<header class="encabezado">
-
-    <h1>ANÁLISIS DE SENTIMIENTOS</h1>
-
-    <p>Inteligencia Artificial aplicada a reseñas de películas</p>
-
-    <span>Dataset IMDB - 50.000 reseñas</span>
-
-</header>
-
-
-<main class="contenedor">
-
-    <!-- ENTRENAMIENTO -->
-
-    <section class="tarjeta">
-
-        <h2>1. Entrenamiento del modelo</h2>
+        <h1>
+            Descubre el sentimiento detrás de cada
+            <span>película</span>
+        </h1>
 
         <p>
-            Configura los parámetros para entrenar
-            el modelo de inteligencia artificial.
+            Analiza reseñas cinematográficas mediante inteligencia
+            artificial. Nuestro sistema identifica automáticamente
+            si una opinión es positiva o negativa.
         </p>
 
-        <label>Máximo de características TF-IDF</label>
+        <a href="{{ url_for('analisis') }}" class="btn-primary">
+            Comenzar análisis
+            <i class="bi bi-arrow-right"></i>
+        </a>
 
-        <input
-            type="number"
-            id="features"
-            value="5000"
-            min="100"
-            max="20000"
-        >
+    </div>
+</section>
 
-        <label>Parámetro C de Regresión Logística</label>
+<section class="section">
 
-        <input
-            type="number"
-            id="parametroC"
-            value="1"
-            min="0.01"
-            max="10"
-            step="0.1"
-        >
+    <h2>¿Qué ofrece CineSentiment AI?</h2>
 
-        <button id="btnEntrenar" onclick="entrenar()">
-            Entrenar modelo
-        </button>
+    <p class="section-description">
+        Tecnología inteligente para comprender las opiniones del cine.
+    </p>
 
-        <p id="estado"></p>
+    <div class="movie-grid">
 
-    </section>
+        <article class="movie-card">
+            <img src="{{ url_for('static', filename='img/superman.jpg') }}"
+                 alt="Experiencia cinematográfica">
+            <h3>Análisis de reseñas</h3>
+            <p>Procesamos opiniones cinematográficas para identificar su sentimiento.</p>
+        </article>
 
+        <article class="movie-card">
+            <img src="{{ url_for('static', filename='img/batman.jpg') }}"
+                 alt="Procesamiento de lenguaje">
+            <h3>Machine Learning</h3>
+            <p>Utilizamos TF-IDF y Regresión Logística para analizar el texto.</p>
+        </article>
 
-    <!-- PREDICCIÓN -->
+        <article class="movie-card">
+            <img src="{{ url_for('static', filename='img/resident-evil.jpg') }}"
+                 alt="Resultados de inteligencia artificial">
+            <h3>Predicción inteligente</h3>
+            <p>Conoce si una reseña expresa una opinión positiva o negativa.</p>
+        </article>
 
-    <section class="tarjeta">
+    </div>
 
-        <h2>2. Análisis de una nueva reseña</h2>
+</section>
 
-        <p>
-            Escribe una opinión sobre una película
-            para identificar su sentimiento.
-        </p>
+{% endblock %}
 
-        <textarea
-            id="resena"
-            rows="5"
-            placeholder="Write your movie review here..."
-        ></textarea>
 
-        <button onclick="predecir()">
-            Analizar sentimiento
-        </button>
 
-        <div id="resultado"></div>
-
-    </section>
-
-
-    <!-- MÉTRICAS -->
-
-    <section class="tarjeta">
-
-        <h2>3. Métricas de rendimiento</h2>
-
-        <p>
-            Resultados obtenidos durante la evaluación
-            del modelo.
-        </p>
-
-        <div id="metricas" class="metricas">
-
-            <p>Primero debes entrenar el modelo.</p>
-
-        </div>
-
-        <div class="informacion">
-
-            <p id="registros"></p>
-
-            <p id="entrenamiento"></p>
-
-            <p id="prueba"></p>
-
-        </div>
-
-    </section>
-
-
-    <!-- GRÁFICAS -->
-
-    <section class="tarjeta">
-
-        <h2>4. Visualización de resultados</h2>
-
-        <div class="graficas">
-
-            <div class="grafica">
-
-                <h3>Matriz de confusión</h3>
-
-                <img
-                    id="graficaMatriz"
-                    alt="Matriz de confusión"
-                >
-
-            </div>
-
-            <div class="grafica">
-
-                <h3>Métricas del modelo</h3>
-
-                <img
-                    id="graficaMetricas"
-                    alt="Gráfica de métricas"
-                >
-
-            </div>
-
-            <div class="grafica">
-
-                <h3>Distribución de sentimientos</h3>
-
-                <img
-                    id="graficaDistribucion"
-                    alt="Distribución de sentimientos"
-                >
-
-            </div>
-
-        </div>
-
-    </section>
-
-</main>
-
-
-<footer>
-
-    <p>Proyecto académico de Inteligencia Artificial</p>
-
-    <p>Análisis de sentimientos utilizando Python y Scikit-learn</p>
-
-</footer>
-
-
-<script>
-
-// ENTRENAR MODELO
-
-async function entrenar() {
-
-    const estado = document.getElementById("estado");
-
-    const boton = document.getElementById("btnEntrenar");
-
-    estado.innerText = "Entrenando modelo... Espere por favor.";
-
-    boton.disabled = true;
-
-    try {
-
-        const respuesta = await fetch("/api/entrenar", {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-
-                max_features: Number(
-                    document.getElementById("features").value
-                ),
-
-                C: Number(
-                    document.getElementById("parametroC").value
-                )
-
-            })
-
-        });
-
-        const datos = await respuesta.json();
-
-        if (!respuesta.ok) {
-
-            throw new Error(datos.error);
-
-        }
-
-        estado.innerText = datos.mensaje;
-
-        mostrarMetricas(datos);
-
-        cargarGraficas();
-
-    }
-
-    catch (error) {
-
-        estado.innerText = "Error: " + error.message;
-
-    }
-
-    finally {
-
-        boton.disabled = false;
-
-    }
-
-}
-
-
-// MOSTRAR MÉTRICAS
-
-function mostrarMetricas(datos) {
-
-    const metricas = datos.metricas;
-
-    document.getElementById("metricas").innerHTML = `
-
-        <div class="indicador">
-
-            <h3>Accuracy</h3>
-
-            <p>${(metricas.accuracy * 100).toFixed(2)}%</p>
-
-        </div>
-
-        <div class="indicador">
-
-            <h3>Precision</h3>
-
-            <p>${(metricas.precision * 100).toFixed(2)}%</p>
-
-        </div>
-
-        <div class="indicador">
-
-            <h3>Recall</h3>
-
-            <p>${(metricas.recall * 100).toFixed(2)}%</p>
-
-        </div>
-
-        <div class="indicador">
-
-            <h3>F1-Score</h3>
-
-            <p>${(metricas.f1_score * 100).toFixed(2)}%</p>
-
-        </div>
-
-    `;
-
-    document.getElementById("registros").innerText =
-        "Total de reseñas: " + datos.registros;
-
-    document.getElementById("entrenamiento").innerText =
-        "Datos de entrenamiento: " + datos.entrenamiento;
-
-    document.getElementById("prueba").innerText =
-        "Datos de prueba: " + datos.prueba;
-
-}
-
-
-// CARGAR GRÁFICAS
-
-function cargarGraficas() {
-
-    const tiempo = Date.now();
-
-    document.getElementById("graficaMatriz").src =
-        "/resultados/matriz_confusion.png?t=" + tiempo;
-
-    document.getElementById("graficaMetricas").src =
-        "/resultados/metricas.png?t=" + tiempo;
-
-    document.getElementById("graficaDistribucion").src =
-        "/resultados/distribucion.png?t=" + tiempo;
-
-}
-
-
-// PREDECIR SENTIMIENTO
-
-async function predecir() {
-
-    const texto = document.getElementById("resena").value;
-
-    const resultado = document.getElementById("resultado");
-
-    if (!texto.trim()) {
-
-        alert("Escribe una reseña primero.");
-
-        return;
-
-    }
-
-    resultado.innerText = "Analizando reseña...";
-
-    try {
-
-        const respuesta = await fetch("/api/predecir", {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-                review: texto
-            })
-
-        });
-
-        const datos = await respuesta.json();
-
-        if (!respuesta.ok) {
-
-            throw new Error(datos.error);
-
-        }
-
-        resultado.className =
-            datos.sentimiento === "Positivo"
-            ? "positivo"
-            : "negativo";
-
-        resultado.innerHTML = `
-
-            <h3>Sentimiento: ${datos.sentimiento}</h3>
-
-            <p>Confianza: ${datos.confianza}%</p>
-
-            <p>Probabilidad positiva:
-            ${datos.probabilidad_positiva}%</p>
-
-            <p>Probabilidad negativa:
-            ${datos.probabilidad_negativa}%</p>
-
-        `;
-
-    }
-
-    catch (error) {
-
-        resultado.className = "error";
-
-        resultado.innerText = error.message;
-
-    }
-
-}
-
-</script>
-
-</body>
-
-</html>

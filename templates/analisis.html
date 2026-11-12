@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Análisis | CineSentiment AI{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <span class="tag">INTELIGENCIA ARTIFICIAL · MACHINE LEARNING</span>
+    <h1>Entrenamiento y análisis</h1>
+    <p>Entrena el modelo y descubre el sentimiento de nuevas reseñas cinematográficas.</p>
+</section>
+
+<div class="content-container">
+
+    <section class="panel">
+        <div class="panel-title">
+            <i class="bi bi-cpu"></i>
+            <div>
+                <h2>Entrenamiento del modelo</h2>
+                <p>Configura los parámetros de TF-IDF y Regresión Logística.</p>
+            </div>
+        </div>
+
+        <form id="formEntrenamiento">
+            <label for="maxFeatures">Máximo de características TF-IDF</label>
+            <input type="number" id="maxFeatures" value="5000" min="100" max="20000" step="100" required>
+            <small>Cantidad máxima de características que utilizará el vectorizador.</small>
+
+            <label for="paramC">Parámetro C de Regresión Logística</label>
+            <input type="number" id="paramC" value="1" min="0.01" max="10" step="0.01" required>
+            <small>Controla la regularización del modelo de clasificación.</small>
+
+            <button type="submit" class="btn-primary">
+                <i class="bi bi-play-fill"></i> Entrenar modelo
+            </button>
+        </form>
+
+        <div class="prediction-result">
+            <p id="estadoEntrenamiento" class="status-message">
+                <i class="bi bi-info-circle"></i> El modelo está listo para entrenarse.
+            </p>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-title">
+            <i class="bi bi-chat-square-text"></i>
+            <div>
+                <h2>Análisis de una nueva reseña</h2>
+                <p>Ingresa una opinión sobre una película para identificar su sentimiento.</p>
+            </div>
+        </div>
+
+        <form id="formResena">
+            <label for="resena">Escribe tu reseña cinematográfica</label>
+            <textarea id="resena" rows="6"
+                placeholder="Example: This movie was amazing! The actors were excellent and the story was wonderful..."
+                required></textarea>
+            <small>Recomendación: escribe la reseña en inglés, ya que el dataset IMDB utilizado para entrenar el modelo contiene reseñas en ese idioma.</small>
+
+            <button type="submit" class="btn-primary">
+                <i class="bi bi-search"></i> Analizar sentimiento
+            </button>
+        </form>
+
+        <div id="resultadoPrediccion" class="prediction-result hidden">
+            <h3><i class="bi bi-clipboard-data"></i> Resultado del análisis</h3>
+            <p id="sentimiento"></p>
+            <p id="confianza"></p>
+            <div class="confidence-track">
+                <div id="confidenceBar"></div>
+            </div>
+            <div class="probabilidades">
+                <p id="probabilidadPositiva">Positiva: 0%</p>
+                <p id="probabilidadNegativa">Negativa: 0%</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-title">
+            <i class="bi bi-lightbulb"></i>
+            <div>
+                <h2>¿Cómo funciona el análisis?</h2>
+                <p>Etapas utilizadas para clasificar las reseñas.</p>
+            </div>
+        </div>
+
+        <div class="feature">
+            <i class="bi bi-file-text"></i>
+            <div>
+                <h3>1. Entrada de texto</h3>
+                <p>El usuario escribe una reseña cinematográfica.</p>
+            </div>
+        </div>
+
+        <div class="feature">
+            <i class="bi bi-diagram-3"></i>
+            <div>
+                <h3>2. Vectorización TF-IDF</h3>
+                <p>El texto se transforma en valores numéricos para que el algoritmo pueda procesarlo.</p>
+            </div>
+        </div>
+
+        <div class="feature">
+            <i class="bi bi-robot"></i>
+            <div>
+                <h3>3. Regresión Logística</h3>
+                <p>El modelo clasifica la reseña como positiva o negativa.</p>
+            </div>
+        </div>
+
+        <div class="feature">
+            <i class="bi bi-check-circle"></i>
+            <div>
+                <h3>4. Resultado</h3>
+                <p>Se presenta el sentimiento identificado y las probabilidades de cada clase.</p>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+{% endblock %}
+

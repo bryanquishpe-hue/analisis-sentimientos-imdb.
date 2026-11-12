@@ -1,0 +1,72 @@
+
+{% extends "base.html" %}
+
+{% block title %}Resultados | CineSentiment AI{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <span class="tag">EVALUACIÓN DEL MODELO</span>
+    <h1>Resultados y métricas</h1>
+    <p>Consulta el rendimiento del modelo de clasificación de sentimientos.</p>
+</section>
+
+<div class="content-container">
+
+    <section class="panel">
+        <div class="panel-title">
+            <i class="bi bi-speedometer2"></i>
+            <div>
+                <h2>Métricas de rendimiento</h2>
+                <p>Indicadores calculados durante la evaluación.</p>
+            </div>
+        </div>
+
+        <div id="metricasGrid" class="metrics-grid">
+            <p>Cargando métricas...</p>
+        </div>
+
+        <button id="actualizarMetricas" class="btn-secondary">
+            <i class="bi bi-arrow-clockwise"></i>
+            Actualizar métricas
+        </button>
+    </section>
+
+    <section class="panel">
+        <div class="panel-title">
+            <i class="bi bi-bar-chart-line"></i>
+            <div>
+                <h2>Visualización de resultados</h2>
+                <p>Gráficas generadas por el entrenamiento del modelo.</p>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+
+            <div class="chart-card">
+                <h3>Distribución de sentimientos</h3>
+                <img
+                    src="{{ url_for('ver_resultado', archivo='distribucion.png') }}"
+                    alt="Distribución de sentimientos">
+            </div>
+
+            <div class="chart-card">
+                <h3>Matriz de confusión</h3>
+                <img
+                    src="{{ url_for('ver_resultado', archivo='matriz_confusion.png') }}"
+                    alt="Matriz de confusión">
+            </div>
+
+            <div class="chart-card chart-wide">
+                <h3>Comparación de métricas</h3>
+                <img
+                    src="{{ url_for('ver_resultado', archivo='metricas.png') }}"
+                    alt="Gráfica de métricas">
+            </div>
+
+        </div>
+    </section>
+
+</div>
+
+{% endblock %}
